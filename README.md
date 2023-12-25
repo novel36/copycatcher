@@ -42,14 +42,11 @@ We're excited to welcome contributions from fellow Ethiopian Flutter devs! 🇪�
 4. **Make your changes:** Implement features, fix bugs, or enhance the codebase.
 5. **Submit a pull request:** Share your work with the team for review and integration.
 
-**## License**
 
-CopyCatcher is an open-source project licensed under the [Insert your chosen license].
 
+CopyCatcher is an open-source project
 **## Join the Community**
 
-* **GitHub Repository:** [Insert your GitHub repo link]
-* **Slack Channel:** [Insert your Slack channel link, if available]
-* **Discord Server:** [Insert your Discord server link, if available]
+* **GitHub Repository:** https://github.com/novel36
 
 **Let's rewrite the rules of copying and pasting together!** ✊
