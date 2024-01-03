@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
 class ClipboardDetailPage extends StatelessWidget {
@@ -18,20 +20,20 @@ class ClipboardDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Clipboard Details'),
+        title: const Text('Clipboard Details'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Text:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(text),
             // ... display other details in a similar manner ...
-            Text(
+            const Text(
               'Tags:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
@@ -39,12 +41,12 @@ class ClipboardDetailPage extends StatelessWidget {
               spacing: 8.0,
               children: [for (final tag in tags) Chip(label: Text(tag))],
             ),
-            Text(
+            const Text(
               'Favorite:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(favorites ? 'Yes' : 'No'),
-            Text(
+            const Text(
               'Device:',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),

@@ -1,9 +1,11 @@
-import 'package:appwrite/appwrite.dart';
+// ignore_for_file: file_names
+
 import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
 import 'package:copycatcher/constant/app_constants.dart';
 import 'package:copycatcher/helper/getDeviceName.dart';
 import 'package:copycatcher/ui/clipboard_sync_logic.dart';
+import 'package:flutter/foundation.dart';
 
 class AppwriteClipboardLogic {
   late Databases _databases;
@@ -23,19 +25,27 @@ class AppwriteClipboardLogic {
           databaseId: Appconstants.databaseID,
           collectionId: Appconstants.clipBoardCollectionID,
           queries: []);
-      print("Total Value is ${response.total}");
+      if (kDebugMode) {
+        print("Total Value is ${response.total}");
+      }
       if (response.documents.isNotEmpty) {
         clipboardLogic
             .addTextToDeviceClipboard(response.documents.last.data['text']);
         await clipboardLogic.clearClipboardHistory();
         await clipboardLogic.addItems(response);
       } else {
-        print("The list is empty");
+        if (kDebugMode) {
+          print("The list is empty");
+        }
       }
     } catch (e, s) {
       // Handle the exception 'e' and stack trace 's'
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
     }
   }
 
@@ -45,7 +55,9 @@ class AppwriteClipboardLogic {
           databaseId: Appconstants.databaseID,
           collectionId: Appconstants.clipBoardCollectionID,
           queries: []);
-      print("Total Value is ${response.total}");
+      if (kDebugMode) {
+        print("Total Value is ${response.total}");
+      }
       if (response.documents.isNotEmpty) {
         // response.documents.last.data
         clipboardLogic
@@ -59,8 +71,12 @@ class AppwriteClipboardLogic {
       }
     } catch (e, s) {
       // Handle the exception 'e' and stack trace 's'
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
       return [];
     }
   }
@@ -86,7 +102,9 @@ class AppwriteClipboardLogic {
           documentId: documentID!);
     } on AppwriteException catch (e) {
       if (e.type == 'document_not_found') {
-        print("Document Not Found");
+        if (kDebugMode) {
+          print("Document Not Found");
+        }
       }
     }
   }
