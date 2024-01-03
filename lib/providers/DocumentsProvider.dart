@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
 import 'package:copycatcher/constant/app_constants.dart';
@@ -45,8 +47,12 @@ class DocumentsProvider extends ChangeNotifier {
       _documents = response.documents;
       notifyListeners();
     } catch (e, s) {
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
       // Handle error
     }
   }
@@ -63,8 +69,12 @@ class DocumentsProvider extends ChangeNotifier {
       _documents?.add(response);
       notifyListeners();
     } catch (e, s) {
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
       // Handle error
     }
   }
@@ -83,8 +93,13 @@ class DocumentsProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e, s) {
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        if (kDebugMode) {}
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
       // Handle error
     }
   }
@@ -100,8 +115,12 @@ class DocumentsProvider extends ChangeNotifier {
       _documents?.removeWhere((doc) => doc.$id == document.$id);
       notifyListeners();
     } catch (e, s) {
-      print('Exception: $e');
-      print('Stack Trace: $s');
+      if (kDebugMode) {
+        print('Exception: $e');
+      }
+      if (kDebugMode) {
+        print('Stack Trace: $s');
+      }
       // Handle error
     }
   }

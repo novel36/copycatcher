@@ -1,6 +1,9 @@
+// ignore_for_file: file_names
+
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 
 Future<String> getDeviceName() async {
   String deviceName = '';
@@ -19,7 +22,9 @@ Future<String> getDeviceName() async {
       deviceName = 'Unknown Device'; // Handle other platforms or errors
     }
   } catch (error) {
-    print('Error acquiring device information: $error');
+    if (kDebugMode) {
+      print('Error acquiring device information: $error');
+    }
   }
 
   return deviceName;

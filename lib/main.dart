@@ -1,22 +1,15 @@
 // import 'package:copycatcher/providers/history_provider.dart';
-import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
 import 'package:copycatcher/constant/app_constants.dart';
-import 'package:copycatcher/models/boxs.dart';
 import 'package:copycatcher/models/clipboard_box.dart';
-import 'package:copycatcher/providers/ClipboardItemsProvider.dart';
-import 'package:copycatcher/providers/DocumentsProvider.dart';
 import 'package:copycatcher/providers/autosync_provider.dart';
 import 'package:copycatcher/providers/clipboard_history_provider.dart';
 import 'package:copycatcher/providers/sync_now_provider.dart';
 import 'package:copycatcher/ui/clipboard_sync_page.dart';
-import 'package:copycatcher/ui/counter.dart';
-import 'package:copycatcher/ui/signup_page/clipboard__sync.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:appwrite/appwrite.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized;
@@ -24,7 +17,6 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ClipboardItemAdapter());
   Hive.registerAdapter(ClipBoardItemTypesAdapter());
-  final box = await Hive.openBox<ClipboardItem>('clipboarditems');
   // await Hive.deleteBoxFromDisk('clipboarditems');
   Client client = Client();
   client = Client()
@@ -207,32 +199,10 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () async {
-                  final result = await context.authNotifier
-                      .createEmailSession(
-                    email: _emailFieldController.text.trim(),
-                    password: _passwordFieldController.text.trim(),
-                  )
-                      .then((value) {
-                    if (value) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          backgroundColor: Colors.blue,
-                          content: Text('Login successful!'),
-                        ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Login Unsuccessful!!!!"),
-                        ),
-                      );
-                    }
-                  });
-                },
+                onPressed: () async {},
                 child: const Text('Login'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               ElevatedButton(
@@ -253,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                       }
                     });
                   },
-                  child: Text("SignUp"))
+                  child: const Text("SignUp"))
             ],
           ),
         ),

@@ -1,11 +1,9 @@
 import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
-import 'package:copycatcher/constant/app_constants.dart';
 import 'package:copycatcher/models/boxs.dart';
 import 'package:copycatcher/models/clipboard_box.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
 
 class ClipboardSyncLogic {
   late Databases databases;
@@ -36,6 +34,7 @@ class ClipboardSyncLogic {
 
   void addTextToDeviceClipboard(String clipBoardText) async {
     await Clipboard.setData(ClipboardData(text: clipBoardText))
+        // ignore: avoid_print
         .then((value) => print("Clipboardvalue is Added"));
   }
 
@@ -75,7 +74,6 @@ class ClipboardSyncLogic {
   }
 
   Future<void> clearClipboardHistory() async {
-    ;
     final clipboardItems = await Boxs.getClipboardItem();
     clipboardItems.clear();
   }

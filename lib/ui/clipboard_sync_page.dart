@@ -1,5 +1,3 @@
-// ui/clipboard_sync_page.dart
-
 // ignore_for_file: unused_local_variable
 
 import 'dart:async';
@@ -14,11 +12,11 @@ import 'package:copycatcher/providers/clipboard_history_provider.dart';
 import 'package:copycatcher/providers/sync_now_provider.dart';
 import 'package:copycatcher/ui/AppwriteClipboardLogic.dart';
 import 'package:copycatcher/ui/clipboard_sync_logic.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
-// ui/clipboard_sync_page.dart
 
 class ClipboardSyncPage extends StatefulWidget {
   final AuthNotifier authNotifier;
@@ -30,7 +28,6 @@ class ClipboardSyncPage extends StatefulWidget {
 
 class _ClipboardSyncPageState extends State<ClipboardSyncPage>
     with ClipboardListener {
-  late final AuthNotifier _authNotifier;
   Databases? databases;
   final clipboardLogic = ClipboardSyncLogic();
   List<String>? fetchList = [];
@@ -117,9 +114,9 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
 
                   // Search bar
                   const SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: const TextField(
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: TextField(
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Search Clipboard History',
@@ -135,7 +132,9 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
                     child: ValueListenableBuilder<Box<ClipboardItem>>(
                       valueListenable: clipboardItems.listenable(),
                       builder: (context, clipboardItems, child) {
-                        print('Clipboard Length is ${clipboardItems.length}');
+                        if (kDebugMode) {
+                          print('Clipboard Length is ${clipboardItems.length}');
+                        }
                         return ListView.separated(
                           itemCount: clipboardItems.length,
                           itemBuilder: (context, index) {
@@ -179,7 +178,9 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
                                         onPressed: () {
                                           clipboardItems.deleteAt(index);
                                           appwriteLogic.deleteDocument(item.id);
-                                          print('item ID is ${item.id}');
+                                          if (kDebugMode) {
+                                            print('item ID is ${item.id}');
+                                          }
                                         },
                                         icon: Icon(Icons.delete,
                                             color: Colors.red.shade200),
@@ -218,7 +219,7 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
                   onPressed: () {
                     clipboardLogic.clearClipboardHistory();
                   },
-                  child: Icon(Icons.remove)),
+                  child: const Icon(Icons.remove)),
             );
           } else {
             return const Center(
@@ -245,20 +246,15 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
               value.$createdAt,
               value.$id);
         } else {
-          print("Error");
+          if (kDebugMode) {
+            print("Error");
+          }
         }
       }).onError((error, stackTrace) {
-        print("some Error Ocured");
+        if (kDebugMode) {
+          print("some Error Ocured");
+        }
       });
     }
-  }
-
-  Future<List<ClipboardItem>> _fetchClipboardItems() async {
-    final box = await Hive.openBox(
-        'clipboardItems'); // Open the Hive box for clipboard items
-    final items =
-        box.values.toList(); // Retrieve all clipboard items from the box
-    return items.cast<
-        ClipboardItem>(); // Cast the items to the ClipboardItem type and return as a list
   }
 }

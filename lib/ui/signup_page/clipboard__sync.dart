@@ -1,7 +1,6 @@
 import 'package:copycatcher/providers/DocumentsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter/services.dart';
 
 class ClipboardSyncPages extends StatefulWidget {
   const ClipboardSyncPages({super.key});
@@ -27,7 +26,7 @@ class _ClipboardSyncPagesState extends State<ClipboardSyncPages> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Clipboard Sync'),
+        title: const Text('Clipboard Sync'),
       ),
       body: Column(
         children: [
@@ -40,7 +39,7 @@ class _ClipboardSyncPagesState extends State<ClipboardSyncPages> {
               //   documentsProvider.addDocument(text);
               // }
             },
-            child: Text('Sync Clipboard'),
+            child: const Text('Sync Clipboard'),
           ),
           Expanded(
             child: ListView.builder(
