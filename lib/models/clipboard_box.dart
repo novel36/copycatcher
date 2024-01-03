@@ -5,13 +5,31 @@ part 'clipboard_box.g.dart';
 @HiveType(typeId: 0)
 class ClipboardItem extends HiveObject {
   @HiveField(0)
-  late dynamic content;
+  String? content;
 
   @HiveField(1, defaultValue: ClipBoardItemTypes.text)
-  late ClipBoardItemTypes type;
+  ClipBoardItemTypes? type;
 
   @HiveField(2)
-  late DateTime timestamp;
+  String? createdAt;
+
+  @HiveField(3)
+  String? deviceName;
+
+  @HiveField(4)
+  String? userId;
+
+  @HiveField(5)
+  String? userEmail;
+
+  @HiveField(6, defaultValue: false)
+  bool? isFavorite;
+
+  @HiveField(7, defaultValue: [])
+  List<String>? tags;
+
+  @HiveField(8)
+  String? id;
 }
 
 @HiveType(typeId: 1)

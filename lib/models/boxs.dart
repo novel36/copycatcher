@@ -12,6 +12,7 @@ class Boxs {
   static Future<Box<ClipboardItem>> getClipboardItem() async {
     // Open the box asynchronously
     final box = await Hive.openBox<ClipboardItem>('clipboarditems');
+
     return box;
   }
 }

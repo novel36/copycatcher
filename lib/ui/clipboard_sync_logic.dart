@@ -1,5 +1,6 @@
 import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
+import 'package:copycatcher/constant/app_constants.dart';
 import 'package:copycatcher/models/boxs.dart';
 import 'package:copycatcher/models/clipboard_box.dart';
 import 'package:flutter/foundation.dart';
@@ -7,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 
 class ClipboardSyncLogic {
-  late AuthNotifier _authNotifier;
+  late Databases databases;
   String? previousClipboardData;
   bool hasContentChanged(String? newContent) {
     return previousClipboardData != newContent;
@@ -17,10 +18,32 @@ class ClipboardSyncLogic {
     return DateTime.now();
   }
 
+  Future<void> addItems(DocumentList documentList) async {
+    final box = await Boxs.getClipboardItem();
+
+    for (final itemContent in documentList.documents) {
+      final clipboardItem = ClipboardItem()
+        ..content = itemContent.data['text']
+        ..createdAt = itemContent.$createdAt
+        ..deviceName = itemContent.data['device']
+        ..userEmail = itemContent.data['useremail']
+        ..userId = itemContent.data['user_id']
+        ..id = itemContent.$id;
+
+      await box.add(clipboardItem);
+    }
+  }
+
+  void addTextToDeviceClipboard(String clipBoardText) async {
+    await Clipboard.setData(ClipboardData(text: clipBoardText))
+        .then((value) => print("Clipboardvalue is Added"));
+  }
+
   Future<String?> getNewClipboardContent() async {
     try {
       ClipboardData? newClipboardData =
           await Clipboard.getData(Clipboard.kTextPlain);
+
       return newClipboardData?.text;
     } on PlatformException catch (e) {
       if (kDebugMode) {
@@ -30,42 +53,25 @@ class ClipboardSyncLogic {
     }
   }
 
-  Future addClipboardItem(String clipboardcontent, DateTime timestamp) async {
-    final currentDateTime = DateTime.now();
-    final timestamp = DateTime(currentDateTime.year, currentDateTime.month,
-        currentDateTime.day, currentDateTime.hour, currentDateTime.minute);
-
+  Future addClipboardItem(
+      String clipboardcontent,
+      String deviceName,
+      String userName,
+      String userId,
+      String createdAt,
+      String documentID) async {
     final clipboardItem = ClipboardItem()
       ..content = clipboardcontent.trim()
-      ..timestamp = timestamp
-      ..type = ClipBoardItemTypes.text;
+      ..createdAt = createdAt
+      ..type = ClipBoardItemTypes.text
+      ..deviceName = deviceName
+      ..userEmail = userName
+      ..userId = userId
+      ..id = documentID;
     final box = await Boxs.getClipboardItem();
-    box.add(clipboardItem);
-    for (var element in box.values) {
-      if (kDebugMode) {
-        print(element.content);
-      }
-    }
-  }
+    await box.add(clipboardItem);
 
-  Future<Document> createDocument(String clipBoardText, Databases database,
-      String deviceName, AuthNotifier authNotifier) {
-    _authNotifier = authNotifier;
-    return database.createDocument(
-        databaseId: '6584aef719720dc26580',
-        collectionId: '6584b0173849af3a96e5',
-        documentId: ID.unique(),
-        data: {
-          "text": clipBoardText,
-          'device': deviceName,
-          'user_id': _authNotifier.user!.$id
-        },
-        permissions: [
-          Permission.read(Role.user(_authNotifier.user!.$id)),
-          Permission.write(Role.user(_authNotifier.user!.$id)),
-          Permission.delete(Role.user(_authNotifier.user!.$id)),
-          Permission.update(Role.user(_authNotifier.user!.$id)),
-        ]);
+    return clipboardcontent;
   }
 
   Future<void> clearClipboardHistory() async {

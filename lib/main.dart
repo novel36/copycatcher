@@ -1,10 +1,17 @@
 // import 'package:copycatcher/providers/history_provider.dart';
+import 'package:appwrite/models.dart';
 import 'package:appwrite_auth_kit/appwrite_auth_kit.dart';
+import 'package:copycatcher/constant/app_constants.dart';
+import 'package:copycatcher/models/boxs.dart';
 import 'package:copycatcher/models/clipboard_box.dart';
+import 'package:copycatcher/providers/ClipboardItemsProvider.dart';
+import 'package:copycatcher/providers/DocumentsProvider.dart';
 import 'package:copycatcher/providers/autosync_provider.dart';
 import 'package:copycatcher/providers/clipboard_history_provider.dart';
 import 'package:copycatcher/providers/sync_now_provider.dart';
 import 'package:copycatcher/ui/clipboard_sync_page.dart';
+import 'package:copycatcher/ui/counter.dart';
+import 'package:copycatcher/ui/signup_page/clipboard__sync.dart';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -17,11 +24,12 @@ void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ClipboardItemAdapter());
   Hive.registerAdapter(ClipBoardItemTypesAdapter());
-  await Hive.openBox<ClipboardItem>('clipboarditems');
+  final box = await Hive.openBox<ClipboardItem>('clipboarditems');
+  // await Hive.deleteBoxFromDisk('clipboarditems');
   Client client = Client();
   client = Client()
-      .setEndpoint("https://cloud.appwrite.io/v1")
-      .setProject("658160be7607ca91e1f2");
+      .setEndpoint(Appconstants.endpoint)
+      .setProject(Appconstants.projectID);
 
   Account account = Account(client);
   runApp(MyApp(
@@ -84,11 +92,19 @@ class MainScreen extends StatelessWidget {
     Widget widget;
     switch (authNotifier.status) {
       case AuthStatus.authenticated:
-        widget = const ClipboardSyncPage();
+        // widget = MyCounterScreen(
+        //   authNotifier: authNotifier,
+        //   client: authNotifier.client,
+        // );
+        widget = ClipboardSyncPage(
+          authNotifier: authNotifier,
+        );
         break;
       case AuthStatus.unauthenticated:
       case AuthStatus.authenticating:
-        widget = const LoginPage();
+        widget = LoginPage(
+          client: authNotifier.client,
+        );
         break;
       case AuthStatus.uninitialized:
       default:
@@ -138,7 +154,8 @@ class _AdminPageState extends State<AdminPage> {
 }
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final Client client;
+  const LoginPage({super.key, required this.client});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -147,9 +164,11 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController _emailFieldController;
   late TextEditingController _passwordFieldController;
+  late final Databases databases;
 
   @override
   void initState() {
+    databases = Databases(widget.client);
     _emailFieldController = TextEditingController();
     _passwordFieldController = TextEditingController();
     super.initState();
@@ -189,30 +208,52 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20.0),
               ElevatedButton(
                 onPressed: () async {
-                  final result = await context.authNotifier.createEmailSession(
+                  final result = await context.authNotifier
+                      .createEmailSession(
                     email: _emailFieldController.text.trim(),
                     password: _passwordFieldController.text.trim(),
-                  );
-                  if (result) {
-                    // Show success message (optional)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Login successful!'),
-                      ),
-                    );
-                    // Additional actions you want after login (optional)
-                    // ...
-                  } else {
-                    // Show error message to user
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Sucess"),
-                      ),
-                    );
-                  }
+                  )
+                      .then((value) {
+                    if (value) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          backgroundColor: Colors.blue,
+                          content: Text('Login successful!'),
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Login Unsuccessful!!!!"),
+                        ),
+                      );
+                    }
+                  });
                 },
                 child: const Text('Login'),
               ),
+              SizedBox(
+                height: 15,
+              ),
+              ElevatedButton(
+                  onPressed: () async {
+                    await context.authNotifier
+                        .create(
+                            email: _emailFieldController.text.trim(),
+                            password: _passwordFieldController.text.trim())
+                        .then((value) {
+                      if (value!.status) {
+                        context.authNotifier.updateVerification(
+                            userId: value.$id, secret: '$value.id');
+                        databases.createDocument(
+                            databaseId: Appconstants.databaseID,
+                            collectionId: Appconstants.countCollectionID,
+                            documentId: 'count${value.$id}',
+                            data: {'count': 0});
+                      }
+                    });
+                  },
+                  child: Text("SignUp"))
             ],
           ),
         ),
