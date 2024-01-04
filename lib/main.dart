@@ -163,6 +163,7 @@ class _LoginPageState extends State<LoginPage> {
     databases = Databases(widget.client);
     _emailFieldController = TextEditingController();
     _passwordFieldController = TextEditingController();
+    print("hello");
     super.initState();
   }
 
@@ -199,7 +200,14 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 20.0),
               ElevatedButton(
-                onPressed: () async {},
+                onPressed: () async {
+                  final email = _emailFieldController.text;
+                  final password = _passwordFieldController.text;
+                  print("sessions");
+                  await context.authNotifier
+                      .createEmailSession(email: email, password: password)
+                      .then((value) => print("Successful $value"));
+                },
                 child: const Text('Login'),
               ),
               const SizedBox(
@@ -207,19 +215,20 @@ class _LoginPageState extends State<LoginPage> {
               ),
               ElevatedButton(
                   onPressed: () async {
+                    final email = _emailFieldController.text;
+                    final password = _passwordFieldController.text;
                     await context.authNotifier
-                        .create(
-                            email: _emailFieldController.text.trim(),
-                            password: _passwordFieldController.text.trim())
+                        .create(email: email.trim(), password: password.trim())
                         .then((value) {
-                      if (value!.status) {
+                      print('${value!.status}');
+                      if (value.status) {
                         context.authNotifier.updateVerification(
                             userId: value.$id, secret: '$value.id');
-                        databases.createDocument(
-                            databaseId: Appconstants.databaseID,
-                            collectionId: Appconstants.countCollectionID,
-                            documentId: 'count${value.$id}',
-                            data: {'count': 0});
+                        // databases.createDocument(
+                        //     databaseId: Appconstants.databaseID,
+                        //     collectionId: Appconstants.countCollectionID,
+                        //     documentId: 'count${value.$id}',
+                        //     data: {'count': 0});
                       }
                     });
                   },

@@ -69,6 +69,14 @@ class _ClipboardSyncPageState extends State<ClipboardSyncPage>
           if (snapshot.hasData) {
             final clipboardItems = snapshot.data!;
             return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  TextButton.icon(onPressed: () async{
+                    await context.authNotifier.deleteSessions();
+                    
+                  }, icon: Icon(Icons.logout), label: Text("Logout"))
+                ],
+              ),
               body: SafeArea(
                   child: Column(
                 children: [
